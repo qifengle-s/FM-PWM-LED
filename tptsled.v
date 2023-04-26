@@ -1,5 +1,5 @@
 module tptsled(
-    input clk,
+	 input clk,
     input rst_n,
     input key_in_duty,
     input key_in_period,
@@ -7,13 +7,12 @@ module tptsled(
     output [5:0] sel,
     output [7:0] seg
 );
-
 wire isPress_duty, isPress_period;
 reg [7:0] duty;
 wire [23:0] period;
 reg [8:0] frequency;
 wire [23:0] htime;
-wire [3:0] h0,h1,m1,m0,s0,s1;
+wire [3:0] h0,h1,m0,s0,s1;
 
 always @(posedge clk or negedge rst_n) begin
     if(!rst_n)
@@ -21,7 +20,7 @@ always @(posedge clk or negedge rst_n) begin
     else begin
         if(isPress_duty) begin
             duty <= duty - 8'd2;
-            if(duty < 0) duty <= 8'd99;
+            if(duty <= 0 || duty >= 99) duty <= 8'd99;
         end
     end
 end
@@ -34,7 +33,7 @@ always @(posedge clk or negedge rst_n) begin
     else begin
         if(isPress_period) begin
             frequency <= frequency - 8'd4;
-            if(frequency < 0) frequency <= 8'd200;
+            if(frequency <= 0 || frequency >= 200) frequency <= 8'd200;
         end
     end
 end
@@ -63,18 +62,18 @@ key_filter i3 (
     .isPress(isPress_period)
 );
 
-assign h0 = frequency % 10;
-assign h1 = frequency / 10;
-assign s0 = duty % 10;
-assign s1 = (duty / 10) % 10;
-assign m0 = duty / 100;
+assign h0 = duty % 10;
+assign h1 = duty / 10;
+assign s0 = frequency % 10;
+assign s1 = (frequency / 10) % 10;
+assign m0 = frequency / 100;
 
 seg_module i4 (
 	.clk(clk),
 	.h0(h0),
 	.h1(h1),
 	.m0(m0),
-	.m1(m1),
+	.m1(4'hA),
 	.rst_n(rst_n),
 	.s0(s0),
 	.s1(s1),
