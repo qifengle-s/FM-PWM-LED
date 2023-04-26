@@ -1,0 +1,40 @@
+`timescale 1 ns/ 1 ps
+module key_filter_vlg_tst();
+reg clk;
+reg key_in;
+reg rst_n;
+// wires                                               
+wire isPress;
+
+key_filter i1 (
+	.clk(clk),
+	.isPress(isPress),
+	.key_in(key_in),
+	.rst_n(rst_n)
+);
+initial                                                
+begin                                                  
+
+    clk = 1'b1;
+    rst_n = 1'b0;
+    #10;
+    rst_n = 1'b1;
+    key_in = 1'b1;
+
+    #100_000_000;
+    key_in = 1'b0;
+    #100_000_000;
+    key_in = 1'b1;
+    #100_000_000;
+    $stop;
+                                                       
+end                                                    
+always                                                 
+begin                                                  
+
+    #10;
+    clk = ~clk;
+                                                       
+end                                                    
+endmodule
+

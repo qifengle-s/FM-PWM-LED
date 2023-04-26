@@ -1,0 +1,38 @@
+`timescale 1 ns/ 1 ps
+module led_vlg_tst();
+reg clk;
+reg [23:0] htime;
+reg [23:0] period;
+reg rst_n;
+// wires                                               
+wire led;
+
+led i1 (
+	.clk(clk),
+	.htime(htime),
+	.led(led),
+	.period(period),
+	.rst_n(rst_n)
+);
+initial                                                
+begin                                                  
+    clk = 1'b1;
+    rst_n = 1'b0;
+    #50;
+    rst_n = 1'b1;
+
+    period = 500;
+    htime = 250;
+    #20_000;
+    period = 1000;
+    htime = 900;
+    #80_000;
+    $stop;
+end                                                    
+always                                                 
+begin                                                  
+   #10;
+   clk = ~clk;
+end                                                    
+endmodule
+
